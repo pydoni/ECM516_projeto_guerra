@@ -1,0 +1,61 @@
+<div id="background-half"></div>
+
+<h1>Ukraine Regions State Map</h1>
+
+<div id="maincontent">
+    <div style="width: 15%;">
+        <p style="color: #FFD700;">
+            Slava
+        </p>
+        <p style="color: #0057B7;">
+            Ukraini
+        </p>
+    </div>
+    <div id="mapa">
+        <!--TODO MAPA---->
+    </div>
+    <div style="width: 15%; display: flex;flex-direction: column;">
+        <a style="color: #FFD700;" href="/signup">
+            Sign Up
+        </a>
+        <a style="color: #0057B7;" href="/login">
+            Login
+        </a>
+    </div>
+</div>
+
+<script>
+    var x = true;
+
+    var h2 = document.createElement("h2");
+
+    h2.innerText = "Select the region in the map and the status";
+
+    var div = document.createElement("div");
+
+    div.style.cssText += "width: 40%; margin:auto; margin-top: 5px; display: flex;"
+
+    var buttonSafe = document.createElement("button");
+    buttonSafe.innerText = "Safe";
+    var buttonAtWar = document.createElement("button");
+    buttonAtWar.innerText = "At War";
+    var buttonCaution = document.createElement("button");
+    buttonCaution.innerText = "Caution";
+
+    div.appendChild(buttonSafe);
+    div.appendChild(buttonAtWar);
+    div.appendChild(buttonCaution);
+
+
+    document.getElementById("maincontent").parentElement.appendChild(h2);
+    document.getElementById("maincontent").parentElement.appendChild(div);
+</script>
+
+<!---
+<h2>Select the region in the map and the status</h2>
+<div style='width: 40%; margin:auto; margin-top: 5px; display: flex;'>
+    <button>Safe</button>
+    <button>At war</button>
+    <button>Caution</button>
+</div>
+-->
