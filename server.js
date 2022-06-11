@@ -2,58 +2,79 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 
-app.use(bodyParser.urlencoded({extended:false}));
+const mongoose = require("mongoose");
+//mongoose.set("debug",true)
+mongoose.connect("mongodb://localhost:27017/dbLingProg");
+const Schema = mongoose.Schema;
 
-app.get("/", (request,response) =>{
-	response.sendFile(__dirname+"/static/index.html")
-});
+const cadastroSchema = new Schema({usuario : String,senha : String,identidade: String,cidade : String});
+
+const Conta = mongoose.model("contas", cadastroSchema);
+Conta.find({"usuario":"Zelensky"});
+
+app.use(bodyParser.json());
 
 // chamadas para login
 
-app.get("/login",(request,response) => {
-	res.sendFile(__dirname+"/static/login.html");
-});
-
 app.post("/login", (request,response)=> {
-	let usuario = req.body.usuario;
-	let senha = req.body.senha;
-	res.send("Usuario: ${usuario} | Senha: ${senha}")
+        const usuario_req = request.body.usuario;
+        const senha_req = request.body.senha;
+        Conta.find({usuario:usuario_req, senha:senha_req}, (err,docs)=>{
+                if(err){
+                        console.log(err);
+                }
+                else{
+                        console.log("foi",docs);
+                        if(docs.length == 0){
+                                response.send("False")
+                        }else{
+                                response.send("True")
+                        }
+                }
+        });
 })
 
 // chamadas para cadastro
 
-app.get("/cadastro",(request,response) => {
-        res.sendFile(__dirname+"/static/cadastro.html");
-});
-
 app.post("/cadastro", (request,response)=> {
-        let usuario = request.body.usuario;
-        let identidade = request.body.identidade;
-	let cidade = request.body.cidade;
-        let senha = request.body.senha;
-        res.send("Usuario: ${usuario} | Senha: ${senha} | Identidade: ${identidade} | Cidade : ${cidade}")
+        const usuario_req = request.body.usuario;
+        const id_req = request.body.identidade;
+        const cidade_req = request.body.cidade;
+        const senha_req = request.body.senha;
+
+        Conta.find({$or:[{usuario:usuario_req},{identidade:id_req}]},
+                (err,docs)=>{
+                        if(err){
+                                console.log(err);
+                        }else{
+                                if(docs.length == 0){
+                                        const novo_usuario = new Conta({usuario :usuario_req,senha:senha_req,identidade:id_req,cidade:cidade_req});
+                                        novo_usuario.save();
+                                        response.send("True");
+                                }else{
+                                        response.send("False");
+                                }
+                        }
+                }
+        );
+
 })
 
 
 // a chamada /mapa é onde trataremos o pin registrado por um usuario com a categoria escolhida, a coordenada do evento e a data do dia que foi registrada
 
-app.get("/mapa",(request,response) => {
-        res.sendFile(__dirname+"/static/mapa.html");
-});
-
 app.post("/mapa", (request,response)=> {
-        let categoria = request.body.categoria;
-        let coordenada_x = request.body.coord_x;
-        let coordenada_y = request.body.coord_y;
-	let data_obj = new Date();
-	let data = ("0" + data_obj.getDate()).slice(-2) +"/" + ("0" + (data_obj.getMonth() + 1)).slice(-2) + " " + data_obj.getHours() + ":" +data_obj.getMinutes() +":"+ data_obj.getSeconds();
-	let token = request.body.token;
-        res.send("Categoria: ${categoria} | x: ${coordenada_x} | y: ${coordenada_y} | data do pin : ${data}")
+        const categoria = request.body.categoria;
+        const coordenada_x = request.body.coord_x;
+        const coordenada_y = request.body.coord_y;
+        const data_obj = new Date();
+        const data = ("0" + data_obj.getDate()).slice(-2) +"/" + ("0" + (data_obj.getMonth() + 1)).slice(-2) + " " + data_obj.getHours() + ":" +data_obj.getMinutes() +":"+ data_obj.getSeconds();
+        const token = request.body.token;
+        response.send(`Categoria: ${categoria} | x: ${coordenada_x} | y: ${coordenada_y} | data do pin : ${data}`)
 })
 
 
-const port = 1308
+const port = 1309
 
-app.listen(port, () => console.log("rodando em ${port}"))
-
+app.listen(port, () => console.log(`rodando em ${port}`))
 
