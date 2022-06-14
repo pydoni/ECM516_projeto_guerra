@@ -5,25 +5,25 @@
                 <p>
                 User
                 </p>
-                <input type="text" id="user">
+                <input type="text" id="user" #user>
                 <p>
                 Password
                 </p>
-                <input type="password" id="password">
+                <input type="password" id="password" #password>
             </div>
             <div style="margin: auto;">
                 <p>
                 Identity
                 </p>
-                <input type="text" id="identity">
-                <p style="font-size: 30px;margin-top: 10px;">
-                Confirm Password
+                <input type="text" id="identity" #identity>
+                <p>
+                City
                 </p>
-                <input type="password" id="confirm-password">
+                <input type="text" id="city" #city>
             </div>
         </div>
         <div style="width: 100%;display: flex;align-items: center;">
-            <button type="submit">
+            <button type="submit" (click)="cadastro()">
                 Sign Up
             </button>
         </div>
